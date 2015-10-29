@@ -1,4 +1,25 @@
 <?php
+//============================================================
+// File name   : Report.php
+// Version     : 1.0
+// Begin       : 2015-10-01
+// Last Update : 2015-10-04
+// Author      : Hasantha Suneth
+// -----------------------------------------------------------
+// 
+//
+// This file is part of Lifestore Controllers
+//
+// 
+//============================================================
+
+
+
+/**
+ * @class Report
+ * This Class contains the methods which are used to handle the reporrt generating process of the transactions.
+ * @author Hasantha Suneth
+ */
 class Report extends CI_Controller {
 
         public function __construct()
@@ -8,10 +29,13 @@ class Report extends CI_Controller {
                  
         }
 		
-		public function index() {
-		  
-		  
-		  //$this->load->model('Report_model');
+		
+	/**
+	 * Load the view to users to generate report as desired.
+	 * @author Hasantha Suneth
+	 */
+		
+	   public function index() {
 		 
 		  $this->load->view('templates/header');
 		  $this->load->view('templates/search_box');
@@ -21,6 +45,12 @@ class Report extends CI_Controller {
 	   }
 	   
 	   
+	   
+	 /**
+	 * Handles the process of generating a report according to the users needs.
+	 * @return $data(dataset) Array contain the acquired data and the sum of the Sales 
+	 * @author Hasantha Suneth
+	 */
 	   function generate_report()
 	   {
 		  $this->load->helper('pdf_helper');
@@ -31,18 +61,21 @@ class Report extends CI_Controller {
 		  $item_type=$this->input->post('optradio');
 		  $time = $this->input->post('time');
 		  $report_type=$this->input->post('optradio2');
-		  $seller = $_SESSION['user_id'];
+		  $user = $_SESSION['user_id'];
 		 
 		  if($report_type==1){	
-			$data['sales_report'] = $this->Reports_model->get_sales_report($item_type,$time,$user);
+			$data = $this->Reports_model->get_sales_report($item_type,$time,$user);
+		  	//$data['sum'] = $this->Reports_model->get_sales_sum($item_type,$time,$user);
 		  }
 		  else{
-			$data['purchase_report'] = $this->Reports_model->get_purchase_report($item_type,$time,$user);
+			$data = $this->Reports_model->get_purchase_report($item_type,$time,$user);
 		  }
 		  
 		  $data['title'] = 'Sales Report';
 		  $this->load->view('pdfreport', $data);
 	   }
 	   
-}
+}//End of the Class---------------------------------------------------------------------------------------
+
+//End of the File=========================================================================================
 ?>

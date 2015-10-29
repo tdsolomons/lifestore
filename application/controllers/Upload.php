@@ -150,6 +150,10 @@ class Upload extends CI_Controller {
 			//add imageid to Image table-----
 			$this->load->model('Upload_model');
 			
+			 $this->load->model('search_model');
+			 //echo 'item : '. $itemId;
+			 $this->search_model->email_search_followers($itemId);
+
 			if($bid==1){
 				$imageId = $this->Upload_model->add_main_image($ImageName,$FileName,$itemId,$bid);
 			}

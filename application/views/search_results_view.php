@@ -138,8 +138,6 @@ function checkSelectedSorting($sorting, $currentSorting){
 
 <link rel="stylesheet" type="text/css" href="<?php echo asset_url(); ?>css/search_styles.css">
 
-
-
 <div id="search_top_options_bar">
 	Order by:
 	<select id="sort_option_combobox" onchange="onSortComboBoxChange()" >

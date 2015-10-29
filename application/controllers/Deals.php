@@ -24,9 +24,9 @@ class Deals extends CI_Controller {
         public function all_deals(){
                 $data['title'] = 'Deals';
                 $this->load->model('deals_model');
-
+                //get deals from the deals model
                 $data['deals'] = $this->deals_model->get_all_deals();
-
+                //loading views
                 $this->load->view('templates/header', $data);
                 $this->load->view('templates/search_box');
                 $this->load->view('all_deals_view', $data);
@@ -45,6 +45,7 @@ class Deals extends CI_Controller {
                 //getting the list of deals of logged in seller
                 $data['deals'] = $this->deals_model->get_sellers_deals();
 
+                //loading views
                 $this->load->view('templates/header', $data);
                 $this->load->view('templates/search_box');
                 $this->load->view('manage_deals_view', $data);
@@ -62,6 +63,7 @@ class Deals extends CI_Controller {
                 $this->load->model('deals_model');      
                 $data['items'] = $this->deals_model->get_sellers_items(); 
 
+                //loading views
                 $this->load->view('templates/header', $data);
                 $this->load->view('templates/search_box');
                 $this->load->view('create_deal_select_item_view', $data);
@@ -83,7 +85,7 @@ class Deals extends CI_Controller {
                 $this->load->model('item_model');
                 $data['items'] = $this->item_model->item($item_id);
 
-
+                //loading views
                 $this->load->view('templates/header', $data);
                 $this->load->view('templates/search_box');
                 $this->load->view('create_deal_view', $data);
@@ -108,14 +110,18 @@ class Deals extends CI_Controller {
                 $this->load->helper('url');
                 //Creating the deal
                 if($this->deals_model->create_deal($item_id, $end_date, $off_perc)){
+					
+					//Checking the wishlist items .
+						$this->load->model('wishlist_model'); 
+						$this->wishlist_model->check($item_id, $off_perc);
+						
                         redirect('/Deals/manage_deals', 'refresh');
                 }else{
                         redirect('/Deals/create_deal/?item=' . $item_id . '&error=TRUE', 'refresh');
                 }
 
-                
-
         }
+		
 
         /**
         * Ends a deal when seller removes a deal on the manage deal page

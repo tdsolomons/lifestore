@@ -10,10 +10,7 @@
                 <input type="submit" name="submit" class="btn btn-default" value="Add Subcategory">
             </form>
         </div>
-        
-        
-        
-        
+
         
     <!--Edit Categories Table--------------------------------->    
 	
@@ -45,14 +42,15 @@
                          <td width="100" height="50px"> 
                                 <select name="parent_category_edit" value="<?php echo set_value('parent_category_edit', $row->parent_category); ?>">
                                     <?php
-                                    if ($categories != 0) {
+                                    if ($categories > 1) {
                                         foreach ($categories as $each) {
                                             ?>
                                             <option value="<?php echo $each->parent_category_id ?>"><?php echo $each->parent_category ?></option>
                                             <?php
                                         }
                                     }
-                                        ?>
+                                  ?>
+                                  
                                  </select> 
                           </td>
 
@@ -84,11 +82,7 @@
                          </tr>
                             <?php
                         } 
-						
-						
-						
-						
-						
+
 						else {
                             ?>
 

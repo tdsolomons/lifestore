@@ -82,6 +82,7 @@ if (!isset($_SESSION)) {
        <li><a href="<?php echo base_url();?>Parent_categories">Categories</a></li>
        <li><a href="<?php echo base_url();?>SubCategories">Sub Categories</a></li>
        <li><a href="<?php echo base_url();?>AdminImageUpload">Banner Images</a></li>
+       <li><a href="<?php echo base_url();?>giftcard/add_giftcard">Gift Cards</a></li>
        <li><a href="<?php echo base_url();?>Refund/admin_view_load">User Support</a></li>
       </ul>
       

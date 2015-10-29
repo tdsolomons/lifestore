@@ -183,13 +183,19 @@ public function buyerRatings(){
      
 
 public function verifyUpload(){
-if(isset($itemId)){	
+if(isset($_SESSION['item_id'])){	
 	
  $itemId=$_SESSION['item_id'];
  $this->load->model('Upload_model');
+ $this->load->model('search_model');
+ //echo 'item : '. $itemId;
+ $this->search_model->email_search_followers($itemId);
+ 
  $verified=$this->Upload_model->checkImages($itemId);
+
  if($verified)
  	$this->index();
+
  else{
   $test=array('testValue'=>"");
   $this->load->view('templates/header');

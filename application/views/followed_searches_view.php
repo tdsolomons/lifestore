@@ -18,7 +18,8 @@
 		foreach ($searches as $object) {
 			echo '<tr>
 					<td>
-						<h3>'. $object->keywords .'</h3>';
+					<div class="follow_container">
+						<h3>Keywords: "'. $object->keywords .'"</h3>';
 						
 			if ($object->min_price != -1) {
 				echo '<br>Minimum price: ' . $object->min_price;
@@ -28,9 +29,37 @@
 				echo '<br>Maximum price: ' . $object->max_price;
 			}
 
-			echo	'</td>
+			if ($object->free_shipping == 1) {
+				echo '<br>Free shipping';
+			}
+
+			//Show item type
+			if ($object->item_type != NULL) {
+				echo "<br>Item type: ";
+				switch ($object->item_type) {
+					case 'all':
+						echo "All";
+						break;
+					case 'buynow':
+						echo "Buy Now";
+						break;
+					case 'auction':
+						echo "Auction";
+						break;
+					default:
+						# code...
+						break;
+				}
+			}
+			//IF seller is available show username
+			if ($object->seller != -1) {
+				echo "<br>Seller :" . $object->username;
+			}
+
+			echo	'	</div>
+						</td>
 					<td>
-						<a href="'. base_url() .'/search/unfollow/?followed_search='. $object->search_id .'&redirect=all">Unfollow</a>
+						<a  href="'. base_url() .'/search/unfollow/?followed_search='. $object->search_id .'&redirect=all">Unfollow this search</a>
 					</td>
 				</tr>';	
 		}

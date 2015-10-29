@@ -174,13 +174,16 @@ if (!isset($_SESSION)) {
 
           </li>
           
-
+ 			<li><a href="<?php echo base_url();?>Giftcard/gift_card"> Gift Cards</a></li>
+            <li><a href="<?php echo base_url();?>Wishlist/mylist"> Wishlist</a></li>
+            
           <li><a href="<?php echo base_url();?>messages/messages"><span class="glyphicon glyphicon-comment"></span> Messages</a></li>
           <li class="dropdown" >
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Account <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="<?php echo base_url();?>MyOrders">My Orders</a></li>
             <li><a href="<?php echo base_url();?>UserAccount">Sellings</a></li>
+            <li><a href="<?php echo base_url();?>Re_order">Re Orders</a></li>
             <li><a href="<?php echo base_url();?>Profile/buyer/?buyer=<?php echo $_SESSION['user_id'] ?>">My Buyer Profile</a></li>
             <li><a href="<?php echo base_url();?>Profile/seller/?seller=<?php echo $_SESSION['user_id'] ?>">My Seller Profile</a></li>
              <li><a href="<?php echo base_url();?>Report">Reports</a></li>

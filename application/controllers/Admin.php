@@ -106,6 +106,15 @@
                 $this->load->view('orderDetailsAdminView', $record);
 			    $this->load->view('templates/footer');
             }
+			    public function add_giftcard() {
+
+          
+                $this->load->model('GiftUcard_model');
+                $record['resultRecord'] = $this->Order_model_s->getRecord($orderID);
+				$this->load->view('templates/adminHeader');
+                $this->load->view('addGiftcard_view', $record);
+			    $this->load->view('templates/footer');
+            }
 			
 	
         }

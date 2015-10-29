@@ -3,9 +3,9 @@
 <div id="conatiner">
 <div class="row">
   <div class="col-md-4">
-  	<img  class="main-image" id="main-image" src="<?php echo base_url().'assets/img/giftcard_images/'.$object->image?>"/>
+  	<img width="350" height="350" class="main-image" id="main-image" src="<?php echo base_url().'assets/img/giftcard_images/'.$object->image?>"/>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4" >
   	<h2><?php echo $object->gift_name; ?></h2> 
     <hr/>  
     <p>Thank you for purchasing </p>

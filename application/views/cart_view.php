@@ -91,6 +91,7 @@
     	<td></td>
 		<td>Gift card value: </td>
 		<td width="250"><div id="floatdiv">
+        <span class="item_price_span gift_code_status"></span>
         <span class="item_price_span gift_code"></span>
 
 <form method="post" id="generate_code" name="generate_code" action="<?php echo base_url(); ?>cart/add_code" >
@@ -123,14 +124,21 @@ $(document).ready(function() {
 				dataType : 'json',
 				success: function(msg) {
 					//console.log(msg.price);
-					$('.gift_code').html('-'+msg.price);
-					$('#generate_code').hide();
-					var total_price = $('.total_price').html();
-					total_price = total_price.replace("Rs ", "");
-					total_price = total_price.replace(",", "");
-					total_price = parseFloat(total_price);
-					$('.discount_value_label').html('Discounted price');
-					$('.discount_value').html('Rs '+parseFloat(total_price-msg.price).toFixed(2));					
+					if(msg.status == 'invalid'){
+						$('.gift_code_status').html('Code is Invalid');
+					}else{
+						$('.gift_code_status').html('');
+						$('.gift_code').html('-'+msg.price);
+						$('#generate_code').hide();
+						var total_price = $('.total_price').html();
+						total_price = total_price.replace("Rs ", "");
+						total_price = total_price.replace(",", "");
+						total_price = parseFloat(total_price);
+						$('.discount_value_label').html('Discounted price');
+						$('.discount_value').html('Rs '+parseFloat(total_price-msg.price).toFixed(2));	
+						
+					}
+									
 					return false;
 				},
 				error:function (xhr, ajaxOptions, thrownError){

@@ -1,4 +1,17 @@
 <?php
+//============================================================
+// File name   : Upload_model.php
+// Version     : 1.0
+// Begin       : 2015-03-01
+// Last Update : 2015-10-04
+// Author      : Hasantha Suneth
+// -----------------------------------------------------------
+// 
+//
+// This file is part of Lifestore models
+//
+// 
+//============================================================
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Upload_model extends CI_Model{

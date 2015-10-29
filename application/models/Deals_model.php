@@ -139,7 +139,9 @@ class Deals_model extends CI_Model {
         if (!isset($_SESSION['user_id'])) {  
             return FALSE;
         }else{
+            //get the id of logged in user
             $user_id = $_SESSION['user_id'];
+            //call the stored proceedure for creating the deal
             $sql = "CALL create_deal('$item_id', '$end_date', '$off_percentage' , '$user_id'); ";
 
             $query = $this->db->query($sql);

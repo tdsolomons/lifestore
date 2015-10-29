@@ -12,15 +12,120 @@ class Search_model extends CI_Model {
             $this->load->database();
     }
 
-    public function get_all_followed_searches(){
+    /**
+    * Emails all the users in matching followed searches for a given item
+    *
+    * @access   public
+    * @param    int $item_id id of the new item added
+    * @return   void
+    */
+    public function email_search_followers($item_id){
 
+        //Get all the search criterias that match with the item. Gett all the user and item deatils too
+        $sql = "SELECT fs.*, 
+                        i.*,
+                        fpi.*,
+                        ai.*, 
+                        u.username, 
+                        u.email , 
+                        u.first_name, 
+                        img.name AS 'image_file_name'
+                FROM (followed_search fs, 
+                    item i,
+                    user u,
+                    image img
+                    ) 
+                LEFT JOIN fixed_price_item fpi
+                    ON i.item_id = fpi.item_id
+                LEFT JOIN auction_item ai
+                    ON i.item_id = ai.item_id
+                WHERE i.title LIKE CONCAT('%', fs.keywords, '%')
+                    AND i.item_id = '$item_id'
+                    AND i.main_image = img.image_id
+                    AND u.user_id = fs.user
+                    AND i.seller != fs.user
+                    AND IF(fs.free_shipping = 1, 0, 1000000) >= i.shipping_cost
+                    AND i.condition_type IN (SELECT condition_type
+                                            FROM fs_has_condition
+                                            WHERE followed_search = fs.search_id)
+                    AND (CASE 
+                            WHEN fs.item_type = 'auction' THEN ai.item_id
+                            WHEN fs.item_type = 'buynow' THEN fpi.item_id
+                            ELSE i.item_id
+                        END) IS NOT NULL;
+    
+                ";
+
+        $query = $this->db->query($sql);
+
+        if ($query) {
+            //returning the followed searches
+            $store_name = 'LifeStore.lk';
+            //Traversing through search crieteras
+            foreach ($query->result() as $row) {
+                //preparing item data for item template
+                $item_data['image_file_name'] = $row->image_file_name;
+
+                //Setting price and link data depending on type of the item
+                if (isset($row->price)) {
+                    $item_data['item_price'] = 'Price: ' . printCurrencyInRs($row->price);
+                    $item_data['item_link'] = base_url() .'item/item/?item='. $row->item_id;
+
+                }else if(isset($row->starting_bid)){
+                    $item_data['item_price'] = 'Bidding starts at ' . printCurrencyInRs($row->starting_bid) . '
+                                    <br>
+                                    <span >'. getTimeLeftForDate($row->end_datetime) .'</span>';
+                    $item_data['item_link'] = base_url() .'item/AuctionItem/?item='. $row->item_id;
+                }
+
+                $item_data['item_title'] = $row->title;
+                $item_data['shipping_cost'] = $row->shipping_cost;
+
+                //Setting data for email template
+                $data['store_name'] = $store_name;
+                $data['recever_name'] = $row->first_name;
+                //genetating email content
+                $data['email_content'] = 'New item has been added matching your search criteria. 
+                                            <br>
+                                            Keyword: ' . $row->keywords .
+                                            '<br>' . 
+                                            $this->load->view('templates/email_item_template', $item_data, true) ;
+
+                //embeding email content in email template
+                $email_msg = $this->load->view('templates/email_template', $data, true);
+                //preparing the email
+                $this->load->library('email');
+                $this->email->set_mailtype("html");
+                $this->email->from('noreply@sep.tagfie.com', $store_name);
+                $this->email->to($row->email); 
+
+                $this->email->subject('New item matching your search has been added');
+                $this->email->message($email_msg);  
+                //sending email
+                $this->email->send();
+            }
+        }else
+            return NULL;        
+    }
+
+    /**
+    * Returns all the followed searches of logged in user
+    *
+    * @access   public
+    * @return   Array of objects that contains followed searches. Returns null if no results found
+    */
+    public function get_all_followed_searches(){
+        //return if user is not logged in
         if (!isset($_SESSION['user_id'])) {
             return NULL;
         }
 
+        //selecting all followed searches for the logged in user
         $user_id = $_SESSION['user_id'];
-        $sql = "SELECT * 
-                FROM followed_search 
+        $sql = "SELECT fs.*, u.username 
+                FROM (followed_search fs)
+                LEFT JOIN user u
+                ON fs.seller = u.user_id
                 WHERE user = '$user_id'
                 ORDER BY search_id DESC";
 
@@ -76,7 +181,7 @@ class Search_model extends CI_Model {
                                 $max_price, 
                                 $sorting, 
                                 $item_type, 
-                                $conditions, 
+                                $condition_types, 
                                 $seller_id){
 
         //return if user is not logged in
@@ -117,8 +222,7 @@ class Search_model extends CI_Model {
                                             sorting, 
                                             max_price, 
                                             min_price, 
-                                            free_shippping, 
-                                            conditions, 
+                                            free_shipping, 
                                             item_type,
                                             seller, 
                                             user)
@@ -127,16 +231,40 @@ class Search_model extends CI_Model {
                         '$max_price',
                         '$min_price',   
                         '$free_ship', 
-                        '$conditions', 
                         '$item_type', 
                         '$seller_id',
                         '$user_id'); ";
-
+        
         $query = $this->db->query($sql);
         //checking if the insertion was successfull
         if ($query) {
-            //returning the inserted search_id of followed search
-            return $this->db->insert_id();
+            //getting the inserted search_id of followed search
+            $search_id = $this->db->insert_id();
+            //Storing condition types, Preparing the query
+            $sql2 = 'INSERT INTO fs_has_condition(followed_search, condition_type)
+                            VALUES ';
+            $insert_count = 0;
+            foreach ($condition_types as $object) {
+                //putting the comma mark
+                if ($insert_count > 0) {
+                    $sql2 .= ',';
+                }
+                $insert_count++;
+                $sql2 .= "('$search_id', '$object')";
+            }
+            //Running the query
+            if ($insert_count > 0) {
+                $query = $this->db->query($sql2);
+                if ($query) {
+                    //returning followed search id
+                    return $search_id;
+                }else{
+                    return -1;
+                }
+            }else{
+                return -1;
+            }
+            
         }else
             return -1;
     }
@@ -319,11 +447,20 @@ class Search_model extends CI_Model {
         }
     }
 
-    public function getSellerUsername($sellerId){
-        if ($sellerId == NULL ) {    
+    /**
+    * Returns seller username for a given seller Id
+    *
+    * @access   public
+    * @param    int $seller_id user input keyword
+    * @return   Array of objects containing result
+    */
+    public function getSellerUsername($seller_id){
+        //Return empty string if seller id is null
+        if ($seller_id == NULL ) {    
             return '';
         }else{
-            $sql = "SELECT username FROM user WHERE user_id='$sellerId';";
+            //Getting username from database
+            $sql = "SELECT username FROM user WHERE user_id='$seller_id';";
 
             $query = $this->db->query($sql);
 

@@ -23,43 +23,50 @@
             ?>
     
         <div class="container" style="margin-top:10px;width:400px;">
-            <form role="form" action="http://sep.tagfie.com/Re_order/re_order_validate" method="post">
+            <form role="form" action="http://sep.tagfie.com/Re_order/re_order_validate?id=<?php echo $item_id; ?>" method="post">
            
                     <div class="form-group">
-                     <label for="fname">Item Id:</label>
+                     <label for="itemid">Item Id:</label>
                      <span style="color:#F00;font-size:12px"><?php echo form_error('item_id'); ?></span>
                      <input type="text" class="form-control"  name="item_id" id="item_id" placeholder="" value="<?php echo set_value('item_id', $item_id); ?>">
                     </div>
   
                    <div class="form-group">
-                     <label for="lname">Item Name:</label>
+                     <label for="itemname">Item Name:</label>
                      <span style="color:#F00;font-size:12px"><?php echo form_error('item_name'); ?></span>
                      <input type="text area" class="form-control"  name="item_name" id="item_name" placeholder="" value="<?php echo set_value('item_name', $item_name); ?>">
                     </div>
                      
                      <div class="form-group">
-                     <label for="email">Item Sub Category:</label>
+                     <label for="subcategory">Item Sub Category:</label>
                      <span style="color:#F00;font-size:12px"><?php echo form_error('category_name'); ?></span>
                      <input type="text" class="form-control"  name="category_name" id="category_name" placeholder="" value="<?php echo set_value('category_name', $category); ?>">
                     </div>
                      
                      <div class="form-group">
-                     <label for="addrs"> Requirement:</label>
+                     <label for="requirement"> Requirement:</label>
                      <span style="color:#F00;font-size:12px"><?php echo form_error('requirement'); ?></span>
                      <input type="text" class="form-control"  name="requirement" id="requirement" placeholder="Enter Required Quantity" value="<?php echo set_value('requirement'); ?>">
                     </div>
                      
                     <div class="form-group">
-                     <label for="street">Supplier Name:</label>
+                     <label for="supplier">Supplier Name:</label>
                      <span style="color:#F00;font-size:12px"><?php echo form_error('supplier_name'); ?></span>
-                     <input type="text" class="form-control"  name="supplier_name" id="supplier_name" placeholder="Enter Supplier name" value="<?php 
-					  if($supplier_name!=null){echo set_value('supplier_name', $supplier_name);}else{echo set_value('supplier_name');} ?>">
+                     
+                     <?php if($re_order_suppliers==1){?>  
+                     <input type="text" class="form-control"  name="supplier_name" id="supplier_name" placeholder="Enter Supplier Name" value="<?php echo set_value('supplier_name', $supplier_name); } else if ($re_order_suppliers==0){ echo set_value('supplier_name'); } ?> ">
+                     <?php if ($re_order_suppliers > 1){?>
+                     <textarea class="form-control"  name="supplier_name" id="supplier_name" placeholder="Enter Supplier Name" value="<?php foreach ($re_order_suppliers as $each) { echo $each->supplier_name; }?>"><?php echo set_value('supplier_name', $each->supplier_name);} ?></textarea>
                     </div>
                 
                     <div class="form-group">
-                     <label for="city">Supplier Email:</label>
+                     <label for="email">Supplier Email:</label>
                      <span style="color:#F00;font-size:12px"><?php echo form_error('supplier_email'); ?></span>
-                     <input type="text" class="form-control"  name="supplier_email" id="supplier_email" placeholder="Enter Supplier Email" value="<?php if($supplier_name!=null){echo set_value('supplier_email', $supplier_email);} else{echo set_value('supplier_email');} ?>">
+                     
+                     <?php if($re_order_suppliers==1){?>  
+                     <input type="text" class="form-control"  name="supplier_email" id="supplier_email" placeholder="Enter Supplier Email" value="<?php echo set_value('supplier_email', $supplier_email); } else if ($re_order_suppliers==0){ echo set_value('supplier_email');} ?> ">
+                     <?php if ($re_order_suppliers > 1){?>
+                     <textarea class="form-control"  name="supplier_email" id="supplier_email" placeholder="Enter Supplier Email" value="<?php foreach ($re_order_suppliers as $each) {echo $each->supplier_email;} ?>"><?php echo set_value('supplier_email', $each->supplier_email);} ?></textarea>
                     </div>
 
                     <div class="form-group col-md-8" style="padding-left:0px;margin-left:0px;margin-top:10px;" >

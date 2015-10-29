@@ -59,5 +59,5 @@
 
 </table>
 
-<a class="light_gray_button" href="<?php echo base_url() ;?>">Continue shopping</a>
-<a class="colored_button"  href="">Proceed to checkout</a>
+<a class="light_gray_button" href="<?php echo base_url();?>">Continue shopping</a>
+<a class="colored_button"  href="<?php echo base_url();?>/cart/shipping_address">Proceed to checkout</a>

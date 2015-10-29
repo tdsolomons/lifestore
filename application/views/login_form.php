@@ -5,7 +5,7 @@
         <?php 
         } else {
         ?>
-        <h1>Login, please.</h1>
+        <h1>Login</h1>
         <?php
         }
         ?>
@@ -13,8 +13,10 @@
         <?php
         
         echo form_open('login/validate_credentials');
-        echo form_input('username', 'Username') ."<br/><br/>";
-        echo form_password('upassword', 'Password') ."<br/><br/><br/>";
+        $opts = 'placeholder="Username"';
+        echo form_input('username', '', $opts) ."<br/><br/>";
+        $optsPass = 'placeholder="Password"';
+        echo form_password('upassword', '', $optsPass) ."<br/><br/><br/>";
         echo form_submit('submit', 'Login')."|";
         echo anchor('login/signup', 'Create Account');
         echo form_close();

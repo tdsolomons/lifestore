@@ -1,17 +1,17 @@
-
 <?php
 
 class Membership_model extends CI_Model {
 
     function validateLogin() {
         $this->db->where('username', $this->input->post('username'));
-        $this->db->where('upassword', $this->input->post('upassword'));
-        $query = $this->db->get('users');
+        $this->db->where('password', $this->input->post('upassword'));
+        $query = $this->db->get('user');
 
         if ($query->num_rows() == 1) {
-            return TRUE;
+            //Edited, returns query
+            return $query;
         } else {
-            return FALSE;
+            return NULL;
         }
     }
 

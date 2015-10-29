@@ -50,10 +50,6 @@
 
 <script type="text/javascript">
 
-	$(document).ready(function(){
-		hideQtyValidationError();
-		hideColorValidationError();
-	});	
 
 	function clickImg(s)
 	{
@@ -79,50 +75,7 @@
 		xmlhttp.send();
 	}	
 
-	function validateForm(){
 
-		//Quantity validation
-		var x = document.forms["buyForm"]["qty"].value;
-		if (x == null || x == "") {
-		    showQtyValidationError();
-		    return false;
-		}else{
-			hideQtyValidationError();
-		}
-
-		//Color field validation
-		var x = document.forms["buyForm"]["color"].value;
-		if (x == null || x == "") {
-		    showColorValidationError();
-		    return false;
-		}else{
-			hideColorValidationError();
-		}
-	}
-
-	function hideQtyValidationError(){
-		document.getElementById("qty_validation_error").style.display = 'none';
-		document.getElementById("qty_validation_error").style.visibility = "hidden";
-	}
-
-	function showQtyValidationError(){
-		document.getElementById("qty_validation_error").style.display = 'block';
-		document.getElementById("qty_validation_error").style.visibility = "visible";
-	}
-
-	function hideColorValidationError(){
-		if(document.getElementById("color_validation_error") != null){
-			document.getElementById("color_validation_error").style.display = 'none';
-			document.getElementById("color_validation_error").style.visibility = "hidden";
-		}
-	}
-
-	function showColorValidationError(){
-		if(document.getElementById("color_validation_error") != null){
-			document.getElementById("color_validation_error").style.display = 'block';
-			document.getElementById("color_validation_error").style.visibility = "visible";
-		}
-	}
 	
 	$(function(){
 		$('.thumb-images').css('margin-top','20px');
@@ -136,12 +89,6 @@
 		});
 	});
 	
-		function addCart(){
-			//alert('asa');
-			window.location.assign("http://sep.tagfie.com/welcome/item/?item=1&tempQty="+$('#qty option:selected').val()+"&tempColor="+$('#color option:selected').val()+"&itemName="+$('#details>h2').html());
-			
-			
-		}
 	
 </script>
 </head>
@@ -171,117 +118,54 @@
 <li></li>
 <li>
 	<span>Item condition: <strong><?php echo $itemObject->condition_title; ?></strong></span>
+	<br>
+	<span>Bidding ends on: <?php echo $itemObject->end_datetime; ?></span>
 </li>
-<form method="post" name="buyForm" action="<?php echo base_url(); ?>cart/add" onSubmit="return validateForm()">
+
 <li>
-
-	<?php 
-		//Shows the color option only if colors options are available
-		if ($color != NULL){ 
-			echo '<div style="">Color
-				<select name="color" id="color" class="dropdown" style="margin-left:110px;">
-				<option value="">--Select--</option>';
-				    
-			            foreach($color as $row)
-			            { 
-			              echo '<option value="'.$row->color_name.'">'.$row->color_name.'</option>';
-			            }
-				            
-			echo '</select><span id="color_validation_error" class = "validation_error">Please select a color</span>
-			</div>';
-		}
-	?>
 </li>
-<li><div style="">Quantity
-<select id="qty" name="qty" id='qty' class="dropdown" style="margin-left:90px;">
-   <option value="">--Select--</option>
-    <?php 
-            for($i=1;$i<=$avail_qty;$i++)
-            { 
-              echo '<option value="'.$i.'">'.$i.'</option>';
-            }
-            ?>
-</select><span id="qty_validation_error" class = "validation_error">Please enter quantity</span>
-
-</div>
+<li>
 </li>
-<li><div>Available Quantity<span style="margin-left:28px;"><?php echo $avail_qty;?></span></div></li>
+<li></li>
 </ul>
 <div id='priceDiv' style="border-radius:5px;">
 			<!--// getShippingTitle and printCurrencyInRs functions are from application/helpers/utility_helper.php (autoload) -->
-        	<span class="item_price_span">Price: <?php echo printCurrencyInRs($itemObject->price); ?></span>
+        	<span class="item_price_span">Current bid: <?php echo printCurrencyInRs($itemObject->amount); ?></span>
+        	<?php 
+        		if (isset($_SESSION['user_id'])) {
+        			if (strcmp($_SESSION['user_id'], $itemObject->bidder)== 0) {
+        				echo '<br><span>You hold the current bid.</span>';
+        			}
+        		}
+        	?>
+        	<br/>
+        	<span>Started from <?php echo printCurrencyInRs($itemObject->starting_bid) ?></span>
         	<br/>
         	<span><?php echo getShippingTitle($itemObject->shipping_cost) ?></span>
         	<br/>
 
 <label style="background:#CCC;"></label><br>
+
+<form method="post" name="buyForm" action="<?php echo base_url(); ?>item/bid" onSubmit="return validateForm()">
 <?php 
 	if(isset($_SESSION['username'])){
 		if (strcmp($_SESSION['username'], $itemObject->username) == 0 ) {
-			echo "<span>You are the seller of this Item, You cannot purchase</span>";
+			echo "<span>You are the seller of this Item, You cannot Bid</span>";
 		}else{
 			echo'
 				<input type="hidden" id="item_id" name="item_id" value="'. $itemObject->item_id . '" >
-				<input id="addToCart" class="button" value="Buy it now"  type="button" onClick="buy_it_now();" style="margin:0;float:none;margin-top:45px;"><br/>
-				<input type="submit" id="AddToCart" class=" button" value="Add To Cart" style="margin:0;float:none;margin-top:10px;">';
+				<input type="text" name="amount" />
+				<br>
+				<span>Enter '. printCurrencyInRs($itemObject->amount + $itemObject->minimum_increment) .' or more
+				<br>
+				<input type="submit" id="AddToCart" class=" button" value="Place Bid" style="margin:0;float:none;margin-top:10px;">';
 		}
 	}else{
-		echo 'Please login, to purchase';
+		echo 'Please login, to Bid';
 	}
 ?>	
 </form>
 
-
-
-<script>
-function buy_it_now()
-{
-	var item = document.getElementById('item_id').value;
-	var quntity = document.getElementById('qty').value;
-	var color = $('#color').val();
-	var isOk = true;
-	
-	if(quntity.length == 0){		
-		
-		isOk = false;
-		$('#qty_validation_error').html('Select Quantity');
-		$('#qty_validation_error').show();
-		$('#qty_validation_error').css('visibility','visible');
-		
-	
-	}else{
-		
-		$('#qty_validation_error').html('');
-		$('#qty_validation_error').hide();
-		$('#qty_validation_error').css('visibility','hidden');
-		
-		
-	}
-	
-	if(color.length == 0){		
-		
-		isOk = false;
-		$('#color_validation_error').html('Select Color');
-		$('#color_validation_error').show();
-		$('#color_validation_error').css('visibility','visible');
-		
-	
-	}else{
-		
-		$('#color_validation_error').html('');
-		$('#color_validation_error').hide();
-		$('#color_validation_error').css('visibility','hidden');
-		
-	}
-	
-	if(isOk){
-		
-		var v = "<?php echo base_url()?>/cart/buy/" + item + "/" + quntity + "/" + color ;
-		window.location.href = v;
-		
-	}
-}
-</script>
 
 <div id="seller_details">
 	<h3>Seller Details</h3>
@@ -300,9 +184,6 @@ function buy_it_now()
 	}
 	?>
 </div>
-
-
-
 
 
 </div>

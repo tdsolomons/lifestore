@@ -19,11 +19,6 @@ if (!isset($_SESSION)) {
 
 	    		<ul id="site_top_right_menu">
 	    			<?php
-	    				//TODO::Check for login
-	    				echo '<li><a href="' . base_url() . 'messages/messages"><img src="' . asset_url() . 'img/message.png" />
-	    								Messages
-								</a><span id="header_messages_count"></span></li>';
-
 
 	    				$cartCount = 0;
 	    				
@@ -32,10 +27,28 @@ if (!isset($_SESSION)) {
 	    				echo '<li><a href="' . base_url() . 'cart/cart"><img src="' . asset_url() . 'img/cart.png" />
 	    								Shopping Cart
 								</a><span id="header_shopping_cart_count">'. $cartCount .'</span></li>';
+	    			
+
+						if(isset($_SESSION['username'])){
+							echo '<li><a href="' . base_url() . 'messages/messages"><img src="' . asset_url() . 'img/message.png" />
+	    								Messages
+								</a><span id="header_messages_count"></span></li>
+							<li><a href="' . base_url() . 'Orders/MyPurchases" >My Purchases</a></li>
+								';
+								
+							echo '<li><span>Logged in as ' . $_SESSION['username'] . '</span></li>
+									<li><a href="' . base_url() . 'Profile/buyer/?buyer='. $_SESSION['user_id'] .'" >Buyer Profile</a></li>
+									<li><a href="' . base_url() . 'Profile/seller/?seller='. $_SESSION['user_id'] .'" >Seller Profile</a></li>
+									<li><a href="' . base_url() . 'Login/logout" >Logout</a></li>
+								';
+						}else{
+							echo '<li><a href="' . base_url() . 'Login/login" >Login</a></li>
+	    							<li><a href="' . base_url() . 'login/register">Register</a></li>';
+						}
+
 	    			?>
 	    			
-	    			<li><a href="<?php echo base_url() ?>login/" >Login</a></li>
-	    			<li><a href="<?php echo base_url() ?>login/register">Register</a></li>
+	    			
 	    		</ul>	
 	    	</div>
     	<a id="header_logo" href="<?php echo base_url(); ?>">

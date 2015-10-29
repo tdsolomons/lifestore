@@ -13,6 +13,8 @@ class Cart extends CI_Controller {
 
 	public function cart()
 	{
+		if(!isset($_SESSION['cart']) || $_SESSION['cart'] == NULL)
+		redirect();
 		$data['cart_items'] = $_SESSION["cart"];
 		$this->load->view('templates/header', $data);
         $this->load->view('templates/search_box');
@@ -39,13 +41,10 @@ class Cart extends CI_Controller {
         $this->load->view('templates/footer');
 	}
 	*/
-	public function buy($a,$b=1)
+	public function buy($a, $b=1)
 	{
 		$this->load->model('item_model');
 		$this->load->model('buynow_model');
-		
-		
-		
 		
 		$item_id = $a;
 		
@@ -61,7 +60,13 @@ class Cart extends CI_Controller {
 		$data['price']=$this->_calculateTotal($data['items'][0]->price, $b, $data['items'][0]->shipping_cost);
 		//echo $i;
 	 	$user_info = $this->item_model->getUserInfomation();
-		
+		if(isset($_POST['changeadd'])){
+			$address['f_name']	= $_POST['name'];
+			$address['address1']	= $_POST['address1'];
+			$address['address2']	= $_POST['address2'];
+			$address['city']	= $_POST['city'];
+			$_SESSION['shipping_address'] = $address;
+		}
 		foreach ($user_info as $object) 
 		{
 			$data['f_name'] = $object->first_name;
@@ -70,20 +75,31 @@ class Cart extends CI_Controller {
 			$data['street']  = $object->street;
 			$data['city'] = $object->city;
 		}
-		
+		if(isset($_SESSION['shipping_address'])){
+			$ad = $_SESSION['shipping_address'];
+			$add = $ad['f_name'].' '.$ad['address1'].' '.$ad['address2'].' '.$ad['city'];
+		}else{
+			$add =$data['address'].' '.$data['street'].' '.$data['city'];
+		}
 		$order = array(
 			'sold_price'=>$data['price']['total'],
 			'ordered_date'=>date('Y-m-d H:i:s'),
 			'item'=>$a,
 			'bought_by_user'=>1,
 			
-			'ship_to_address'=>$data['address'].' '.$data['street'].' '.$data['city'],
+			'ship_to_address'=>$add,
 			'ordered_quantity'=>$b
 			
 			);
+		if(isset($_GET['save']) && $_GET['save'] == 1){
 			$this->buynow_model->insertItems($order);
-			
+			$_SESSION['shipping_address']= NULL;
+			redirect('cart/confirmorder');
+	
+		}
+					
 		//$data['cart_items'] = $_SESSION["cart"];
+		//print_r($data);
 		$this->load->view('templates/header', $data);
         $this->load->view('templates/search_box');
         $this->load->view('view_buynow',$data);
@@ -121,29 +137,89 @@ class Cart extends CI_Controller {
 		//View cart
 		redirect('/cart/cart', 'refresh');
 	}
-	public function add_buynow(){
+	public function insertcart(){
+		if(!isset($_SESSION['cart']) || $_SESSION['cart'] == NULL)
+		redirect();
+		$cart_items = $_SESSION["cart"];
 		
-		$item_id = $this->input->post('item_id');
-		
-        $qty = $this->input->post('qty');
-        //echo "$color $qty $item_id";
-
-		$item = $this->cart_model->getItemDetails($item_id);
-		$item[0]->qty = $qty;
-		$item[0]->color = $color;
-		
-		if ($item != NULL) {
-			if (isset($_SESSION["buyitnow"])){ //check if cart already there or empty
-				$items = $_SESSION['buyitnow'];
-				$_SESSION["buyitnow"] = array_merge($items, $item);
-			}else{
-				$_SESSION["buyitnow"] = $item;
-			}
+		if(isset($_SESSION['shipping_address'])){
+			$a = $_SESSION['shipping_address'];
+			$address = $a['f_name'].' '.$a['address1'].' '.$a['address2'].' '.$a['city'];
+		}else{
+			$address = $this->_getaddress();
 		}
+		foreach ($cart_items as $object) {
 		
+			 
+		$order = array(
+			'sold_price'=>($object->price * $object->qty)+$object->shipping_cost,
+			'ordered_date'=>date('Y-m-d H:i:s'),
+			'item'=>$object->item_id,
+			'bought_by_user'=>1,
+			
+			'ship_to_address'=>$address,
+			'ordered_quantity'=>$object->qty
+			
+			);
+			$this->cart_model->insertItems($order);
+			
 		}
-		
+		$_SESSION["cart"] = NULL;
+		$_SESSION['shipping_address']= NULL;
+		$this->load->view('templates/header');
+        $this->load->view('templates/search_box');
+        $this->load->view('view_orderconfirmation');
+        $this->load->view('templates/footer');
 	
+	}
+	public function confirmorder(){
+		$this->load->view('templates/header');
+        $this->load->view('templates/search_box');
+        $this->load->view('view_orderconfirmation');
+        $this->load->view('templates/footer');
+	}
+	private function _getaddress(){
+		$this->load->model('item_model');
+		$user_info = $this->item_model->getUserInfomation();
+		
+		foreach ($user_info as $object) 
+		{
+			$address['f_name'] = $object->first_name;
+			$address['l_name'] = $object->last_name;
+			$address['address'] = $object->address;
+			$address['street']  = $object->street;
+			$address['city'] = $object->city;
+		}
+		return $address['address'].' '.$address['street'].' '.$address['city'];
+			
+	}
+	public function shipping_address()
+	{
+		$this->load->model('item_model');
+		$user_info = $this->item_model->getUserInfomation();
+		
+		
+		if(isset($_POST['changeadd'])){
+			$address['f_name']	= $_POST['name'];
+			$address['address1']	= $_POST['address1'];
+			$address['address2']	= $_POST['address2'];
+			$address['city']	= $_POST['city'];
+			$_SESSION['shipping_address'] = $address;
+		}
+		foreach ($user_info as $object) 
+		{
+			$data['f_name'] = $object->first_name;
+			$data['l_name'] = $object->last_name;
+			$data['address'] = $object->address;
+			$data['street']  = $object->street;
+			$data['city'] = $object->city;
+		}
+		$this->load->view('templates/header');
+        $this->load->view('templates/search_box');
+        $this->load->view('shippingaddress_view', $data);
+        $this->load->view('templates/footer');
+	}
+
 	
 	
 }

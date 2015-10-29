@@ -7,7 +7,7 @@ class UserAccount extends CI_Controller {
  function __construct()
 	{
 		parent::__construct();
-		$this->load->helper(array('form', 'url'));
+		$this->load->helper(array('form', 'url','array'));
 		session_start();
 	}
  
@@ -16,7 +16,8 @@ class UserAccount extends CI_Controller {
  public function index()
  	{
  		//load user's items table
-	
+	    
+		
 		if(isset($_SESSION['buttonId']))
 		unset($_SESSION['buttonId']);
 		
@@ -70,6 +71,7 @@ public function dispatch(){
 	$orderId=$this->input->get('order');
 	$this->load->model('Upload_model');
 	$this->Upload_model->dispatchOrder($orderId);
+	$this->sendMail($orderId);
 	$this->index();
 	
 	}
@@ -79,6 +81,7 @@ public function deliver(){
 	$orderId=$this->input->get('order');
 	$this->load->model('Upload_model');
 	$this->Upload_model->deliverOrder($orderId);
+	
 	$this->index();
 	
 	}
@@ -93,9 +96,31 @@ public function returned(){
 	
  
 
+public function sendMail($orderId){
+	$this->load->model('Upload_model');
+	$array=$this->Upload_model->getOrderDetails($orderId);
+	$title=element('title',$array);
+	$email=element('email',$array);
+	$itemId=element('itemId',$array);
+  
 
- 
+
+	mail($email, "LifeStore.lk :Item(".$itemId.") Dispatched", "Your ordered item:".$title." has been dispatched by the seller", "From: iahsp4@gmail.com");
 	
+}
+ 
+
+public function updateItem(){
+	$itemId=$this->input->get('item');
+	$this->load->model('Upload_model');
+	$array=$this->Upload_model->getItemDetails($itemId);
+		
+	$this->load->model('Search_model');
+	$array['categories']=$this->Search_model->getAllCategories();
+	$array['conditions']=$this->Search_model->getConditionsTypes();
+	$this->load->view('updateItem_view',$array);
+	
+}
      
      
      

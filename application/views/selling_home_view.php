@@ -102,7 +102,7 @@
                
                <!--Main Content----------------------->
                <div class="col-lg-10" style="min-height:800px;">
-                        <div class="page-header h4">All listings </div>
+                        <div class="page-header h4">Sell your Items </div>
                              
                
                
@@ -110,13 +110,63 @@
               
                <a href="http://sep.tagfie.com/UserAccount/sell" class="btn btn-default">Add Item   </a>
                
-               		<!--Active Sellings Table------------------>
-                    <?php echo $this->table->generate($query); ?>
+               		
+                    <!--Active Sellings Table------------------>
+                    
+               
+                     <div class="panel" style="width:700px;margin-top:70px;margin-bottom:20px"><h4>All Selling </h4></div>
+                     <table class="table table-striped table-bordered" style="margin-top:8px; width:900px">
+   	       
+                       <th>Item</th><th>Name</th><th>Date</th><th>Quantity</th><th>Actions</th>
+                      
+                      <?php foreach($query as $rowa){?>
+                         <tr>
+                         <td><?php  
+						 			$item1a=$rowa->main_image;
+						 			$query1a="select name from image where image_id ={$item1a}";
+						  			$resultQuery1a=mysqli_query($connection,$query1a);
+								    $result1a=mysqli_fetch_assoc($resultQuery1a);
+						            $url1a=asset_url()."img/item_images/".$result1a["name"];
+							?>
+									<img src="<?php echo $url1a?>" alt="Smiley face" height="80" width="80"> 	
+									
+							 
+                                    
+                         </td>
+                         
+                                           
+                                           
+                         <td>
+                         <?php
+                         $itemId=$rowa->item_id;?>
+                         <a href="http://sep.tagfie.com/item/item/?item=<?php  echo $itemId; ?>"><?php  echo $rowa->title; ?></a></td>
+                         <td><?php  echo $rowa->posted_date; ?></td>
+                         <td><?php  echo $rowa->available_quantity; ?></td>
+                         
+                         
+                      	 <td>
+                            <a href="http://sep.tagfie.com/UserAccount/updateItem?item=<?php echo $itemId ;?>" class="btn btn-primary btn-sm"  >Edit</a></td>
+             
+            			 
+                        
+                         
+                         
+                         </tr>
+              		<?php } ?>
+              
+              </table>
+              
+               
+               
+               
+               
+               
+               
                
                
                		<!--Ordered items Table--------------------->
-                     <div class="panel" style="width:700px;margin-top:70px;margin-bottom:20px"><h4>Ordered Items</h4></div>
-                     <table class="table table-striped" style="margin-top:8px; width:900px">
+                     <div class="panel" style="width:700px;margin-top:70px;margin-bottom:20px;"><h4> Ordered Items</h4></div>
+                     <table class="table table-striped table-bordered" style="margin-top:8px; width:900px">
    	       
                        <th>Item</th><th>Name</th><th>Quantity</th><th>Date</th>
                        <th>Price</th><th>Order Status</th><th>Actions</th>
@@ -181,7 +231,7 @@
               
               <!--Delivered items Table--------------------->
                      <div class="panel" style="width:700px;margin-top:70px;margin-bottom:20px"><h4>Delivered Items </h4></div>
-                     <table class="table table-striped" style="margin-top:8px; width:900px">
+                     <table class="table table-striped table-bordered" style="margin-top:8px; width:900px">
    	       
                        <th>Item</th><th>Name</th><th>Quantity</th><th>Date</th>
                        <th>Price</th><th>Order Status</th><th>Actions</th>
@@ -246,10 +296,10 @@
               
               <!--Returned items Table--------------------->
                      <div class="panel" style="width:700px;margin-top:70px;margin-bottom:20px"><h4>Returned Items</h4></div>
-                     <table class="table table-striped" style="margin-top:8px; width:900px">
+                     <table class="table table-striped table-bordered" style="margin-top:8px; width:900px">
    	       
                        <th>Item</th><th>Name</th><th>Quantity</th><th>Date</th>
-                       <th>Price</th><th>Order Status</th><th>Actions</th>
+                       <th>Price</th><th>Order Status</th>
                       <?php foreach($returnedItems as $rowr){?>
                          <tr>
                          <td><?php  
@@ -289,7 +339,7 @@
                          
                       
              
-            			 <td ><a href="" class="btn btn-primary btn-sm"  >View</a></td>
+            			 
                          
                          </tr>
               		<?php } ?>
@@ -299,7 +349,7 @@
               
               <!--Completed orders Table--------------------->
                      <div class="panel" style="width:700px;margin-top:70px;margin-bottom:20px"><h4>Completed Orders</h4></div>
-                     <table class="table table-striped" style="margin-top:8px; width:900px">
+                     <table class="table table-striped table-bordered" style="margin-top:8px; width:900px">
    	       
                        <th>Item</th><th>Name</th><th>Quantity</th><th>Date</th>
                        <th>Price</th><th>Order Status</th>

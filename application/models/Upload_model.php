@@ -87,7 +87,7 @@ class Upload_model extends CI_Model{
 	    $condition = $this->input->post('condition');
 	    $s_price = $this->input->post('s_price');
 	    $minBid = $this->input->post('minBid');
-		$endDate=$this->input->get('e_date');				
+		$endDate=$this->input->post('e_date');				
 		
 		
 		$insert = $this->db->insert('item',$array);
@@ -251,8 +251,8 @@ class Upload_model extends CI_Model{
    
    public function getListings()
    	  {
-     	$query = $this->db->query("SELECT title,posted_date,shipping_cost,available_quantity FROM item");   
-	    return $query;
+     	$query = $this->db->query("SELECT * FROM item where seller=3");   
+	    return $query->result();
       }
 
 
@@ -297,6 +297,57 @@ class Upload_model extends CI_Model{
      	$query = $this->db->query("update EMarketingPortal.order set order_status=5 where order_id=$orderId ");	
 		return $query;
       }  
+
+
+	public function getOrderDetails($orderId)
+   	  {
+     	$query = $this->db->query("select * from EMarketingPortal.order where order_id=$orderId ");	
+		$row=$query->row();
+		$itemId=$row->item;
+		$sellerId=$row->bought_by_user;
+		
+		$query2 = $this->db->query("select title from EMarketingPortal.item where item_id=$itemId ");
+		$row2=$query2->row();
+		$title = $row2->title;
+		
+		
+		
+		$query3 = $this->db->query("select email from EMarketingPortal.user where user_id=$sellerId ");
+		$row3=$query3->row();
+		$email = $row3->email;
+		
+		
+		$data=array('title'=>$title,'email'=>$email,'itemId'=>$itemId);	
+		return $data;
+      }  
+
+
+	public function  getItemDetails($itemId)
+   	  {
+     	$query = $this->db->query("select * from item where item_id=$itemId ");	
+		$itemData=$query->row();
+		$categoryId=$itemData->category;
+		$conditionId=$itemData->condition_type;
+		
+		$query2 = $this->db->query("select price from fixed_price_item where item_id=$itemId ");
+		$row2=$query2->row();
+		$price=$row2->price;
+		
+		$query3 = $this->db->query("select category_name from category where category_id=$categoryId ");
+		$row3=$query3->row();
+		$category=$row3->category_name;
+		
+		$query4 = $this->db->query("select condition_title from condition_type where condition_id=$conditionId ");
+		$row4=$query4->row();
+		$condition=$row4->condition_title;
+		
+		
+		
+		$data = array('itemData'=>$itemData,'price'=>$price,'category'=>$category,'condition'=>$condition);
+		
+		return $data;
+      
+	  }  
 
 }
 

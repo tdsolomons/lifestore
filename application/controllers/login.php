@@ -5,14 +5,24 @@ Class Login extends CI_Controller {
     function __construct()
 	{
 		parent::__construct();
+        session_start();
 		$this->load->helper(array('form', 'url'));
 	    $this->load->database();
 	}
 	
 	
-	public function index() {
-        
+	public function login() {
+        $data['title'] = 'Login';
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/search_box');
 		$this->load->view('login_form');
+        $this->load->view('templates/footer');
+    }
+
+    public function logout(){
+        $this->load->helper('url');
+        session_destroy();
+         redirect('/welcome', 'refresh');
     }
 
     public function validate_credentials() {
@@ -23,17 +33,27 @@ Class Login extends CI_Controller {
             $this->load->model('membership_model');
             $query = $this->membership_model->validateLogin();
 
-            if ($query) { //if the user's credentials are validated,
+            if ($query != NULL) { //if the user's credentials are validated,
                 $data = array(
                     "username" => $this->input->post('username'),
                     "is_logged_in" => true
                 );
-
-                $this->load->library('session');
-                $this->session->set_userdata($data);
-                redirect('myOrders');
+                //Edited 
+                $_SESSION['username'] = $this->input->post('username'); 
+                foreach ($query->result() as $row)
+                {
+                    $_SESSION['user_id'] = $row->user_id;
+                }
+            
+                //echo  $this->input->post('username');
+                //echo $_SESSION['username'];
+                //$this->load->library('session');
+                //$this->session->set_userdata($data);
+                $this->load->helper('url');
+                //$this->load->view('home_view');
+                redirect('/welcome', 'refresh');
             } else { //incorrect username or password
-                $this->index();
+                redirect('/Login/login', 'refresh');
                 print_r($query);
             }
         }

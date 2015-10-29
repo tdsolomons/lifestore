@@ -24,6 +24,18 @@ class Cart_model extends CI_Model {
         }
     }
 	
+	public function insertItems($data)
+{
+	return $this->db->insert('order',$data);
+	
+	
+	
+}
+	
+	
+	
+	
+	
 	/*function ProceedToCheckOut() {
         //$username = $this->input->post('username');
 

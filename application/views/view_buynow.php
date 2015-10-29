@@ -64,7 +64,7 @@
 		
 		if(isOk){
 			
-			alert('wede goda');
+			
 		}
 	}
  </script>
@@ -85,7 +85,7 @@
     <span style="margin-top:20px;">Address Line1 *</span><input style="margin-top:20px; margin-left: 15px;" type="text" id="aline1"/><span style="color:red; margin-left:10px;"></span><br/>
     <span style="margin-top:20px;">Address Line2  </span><input style="margin-top:20px; margin-left: 15px;" type="text" id="aline2"/><br/>
     <span style="margin-top:20px;">City *  </span><input style="margin-top:20px; margin-left: 78px;" type="text" id="city"/><span style="color:red; margin-left:10px;"></span><br />
-    <input type="button" id="btn_change_add" value="Change" onclick="btn_change_add_click();"style="width:60px;"/></div>
+    <input type="button" id="btn_change_add" value="Change" onClick="btn_change_add_click();"style="width:60px;"/></div>
  
  
 </div>
@@ -151,5 +151,6 @@
 	</tr>
 
 </table>
+<a class="colored_button"  href="<?php echo base_url().'/cart/buy/'.$items[0]->item_id.'/'.$qty.'/?save=1'?>">Proceed to checkout</a>
 </body>
 </html>

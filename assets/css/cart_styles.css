@@ -1,0 +1,15 @@
+#shopping_cart_view_table td{
+	vertical-align: top;
+	padding: 5px;
+}
+
+.item_price_span{
+	font-size: large;
+	font-style: normal;
+	font-weight: bolder;
+}
+
+#cart_total_table{
+	float: right;
+	width: 100%;
+}

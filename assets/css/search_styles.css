@@ -1,0 +1,50 @@
+#page_navigator {
+  padding: 10px;
+  border: 1px;
+  border-style: solid;
+  margin: 5px;
+  border-radius: 5px;
+  border-color: rgb(199, 199, 199);
+}
+
+#price_range_validation_error{
+	color: red;
+}
+
+#price_range_validation_error img{
+	width: 20px;
+}
+
+.item_price_span{
+	font-size: large;
+	font-style: normal;
+	font-weight: bolder;
+}
+
+div#search_top_options_bar {
+	padding: 15px 10px 15px 10px;
+	border-bottom: 1px;
+	background-color: rgb(231, 231, 231);
+	border-radius: 5px;
+}
+
+#result_count_text{
+	  padding: 10px;
+}
+
+div#search_filter_side_bar {
+  height: 100%;
+  width: 200px;
+  float: left;
+  background-color: rgb(231, 231, 231);
+    padding: 15px;
+}
+
+#search_result_container{
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 5px;
+	border-color: rgb(189, 189, 189);
+	margin: 5px 0px 0px 235px;
+	min-height: 800px;
+}

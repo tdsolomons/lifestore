@@ -1,0 +1,71 @@
+#searchbox
+{
+    background-color: #eaf8fc;
+    background-image: linear-gradient(#fff, #d4e8ec);
+    border-radius: 35px;    
+    border-width: 1px;
+    border-style: solid;
+    border-color: #c4d9df #a4c3ca #83afb7;            
+    width: 500px;
+    height: 35px;
+    padding: 10px;
+
+    overflow: hidden; /* Clear floats */
+}
+
+#search_input_box, 
+#search_submit {
+    float: left;
+}
+
+#search_input_box {
+    padding: 5px 9px;
+    height: 35px;
+    width: 398px;
+    border: 1px solid #a4c3ca;
+    font: normal 13px 'trebuchet MS', arial, helvetica;
+    background: #f1f1f1;
+    border-radius: 50px 3px 3px 50px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);            
+}
+
+#search_input_box:focus{
+    outline: 0;
+}
+
+/* ----------------------- */
+
+#search_submit
+{       
+    background-color: #6B97BB;
+    background-image: linear-gradient(#CFDBE8, #6B9ABB);
+    border-radius: 3px 50px 50px 3px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #7C8BBA #575C8E #43537D;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 
+                0 1px 0 rgba(255, 255, 255, 0.3) inset;
+    height: 35px;
+    margin: 0 0 0 10px;
+    padding: 0;
+    width: 90px;
+    cursor: pointer;
+    font: bold 14px Arial, Helvetica;
+    color: #23441e;    
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+}
+
+#search_submit:hover {       
+    background-color: #88B6D7;
+    background-image: linear-gradient(#6B9DBB, #88BCD7);
+}   
+
+#search_submit:active {       
+    background: #88CED7;
+    outline: none;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;        
+}
+
+#search_submit::-moz-focus-inner {
+       border: 0;  /* Small centering fix for Firefox */
+}

@@ -1,0 +1,11 @@
+.item_prev_price_span {
+    text-decoration: line-through;
+}
+
+.deal_gone_message{
+	color: red;
+}
+
+td.deals_page_item {
+    width: 33%;
+}

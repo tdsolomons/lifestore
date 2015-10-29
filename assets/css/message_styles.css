@@ -3,8 +3,36 @@
     color: #FFF;
 }
 
+#message_table{
+	border-collapse:collapse;
+}
+
 #message_table td {
-	border: 1px #DDD solid; 
-	padding: 5px; 
+	
+	padding: 10px 10px 10px 5px; 
 	cursor: pointer;
+	
+}
+
+tr.message_item.read td{
+	background-color: rgb(228, 228, 228);
+}
+
+tr.message_item.unread td{
+	background-color: white;
+}
+
+tr.message_item td {
+  border-bottom:1pt solid rgb(205, 205, 205);
+
+}
+
+tr.message_item:hover {
+  border-style: solid;
+  border-width: 0pt 0pt 0pt 4pt;
+}
+
+
+#message_table th{
+	border-bottom:1pt solid rgb(205, 205, 205);
 }

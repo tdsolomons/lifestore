@@ -51,7 +51,10 @@ $(function(){
 		}
 		
 		if(isOk){
-			
+			return true;
 	
+		}else{
+			return false;
 		}
+
 	}

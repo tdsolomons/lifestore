@@ -7,8 +7,12 @@ class Item_model extends CI_Model {
     }
 
     public function item($itemId = '1'){
-    	$query = $this->db->query("SELECT i.* , u.username, u.user_id, u.first_name, u.last_name, ct.*, c.*, fpi.price, img.file_name 
-                                    FROM item i, user u, category c, condition_type ct, fixed_price_item fpi, image img
+    	$query = $this->db->query("SELECT i.* , u.username, u.user_id, u.first_name, u.last_name, ct.*, c.*, fpi.price, img.file_name,			
+								fpi.allow_offers, d.off_percentage, d.end_time
+                                    FROM (item i, user u, category c, condition_type ct, fixed_price_item fpi, image img)
+                                    LEFT JOIN deal d
+                                    ON d.fixed_price_item = fpi.item_id
+                                        AND d.end_time > NOW()
                                     WHERE i.seller = u.user_id 
                                         AND i.item_id = fpi.item_id
                                         AND i.category = c.category_id 
@@ -115,10 +119,10 @@ class Item_model extends CI_Model {
     	}
     }
 	
-	public function getUserInfomation(){
+	public function getUserInfomation($id = 1){
     	$query = $this->db->query("SELECT first_name,last_name,email,address,street,city
 									FROM  user
-									WHERE user_id=1"
+									WHERE user_id=".$id
     								);
     	if($query->num_rows() > 0){
     		return $query->result();
@@ -127,7 +131,44 @@ class Item_model extends CI_Model {
     	}
     }
 	
-	public function insertBuynowItem(){
+	public function getBidInformation($itemId='1'){
+		$query=$this->db->query("SELECT bid.auction_item,bid.bidder,bid.amount,bid.bid_datetime,user.first_name
+									FROM bid 
+									INNER JOIN user
+									ON bid.bidder=user.user_id
+									where auction_item='".$itemId."'"
+								 );
+		
+		if($query->num_rows() > 0){
+    		return $query->result();
+    	}else{
+    		return NULL;
+    	}
 		}
-
+	
+	public function getBidCount($itemId = '1'){
+		$query=$this->db->query("SELECT * FROM bid
+								 WHERE auction_item='". $itemId . "'");
+		
+		if($query->num_rows() > 0){
+    		
+			return $query->num_rows();
+    	}else{
+    		return NULL;
+    	}	
+	}
+	
+	public function insertOffer($itemId, $amount, $quantity,$userId){
+		$sql = "Insert into offers(item_id,amount,quantity,buyer_id)
+				Values('$itemId',$amount,$quantity,$userId)";
+        $query = $this->db->query($sql);
+       
+	    if($query){
+            return TRUE;
+        }else{
+            return FALSE;
+        }
+		
+		}
 }
+?>

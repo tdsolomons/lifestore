@@ -1,5 +1,5 @@
 body {
-	background: #e3e3e3;
+	background: #FFFFFF;
 	font-family: helvetica;
 	font-size: 14px;
 	text-align: center;
@@ -12,15 +12,25 @@ body {
 }
 
 #conatiner {
-	background: #CCC;
-	width: 1000px;
-	height: auto;
-	margin: 0 auto;
-	padding: 10px;
-	border: 1px solid #f2f2f2;
-	overflow: hidden;
+	
+	background: #FFFFFF;
+  	width: 1000px;
+  	height: auto;
+  	margin: 0 auto;
+  	padding: 10px;
+  	/* border: 1px solid #ACACAC; */
+ 	overflow: hidden;
+
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 5px;
+	border-color: rgb(189, 189, 189);
+	
+
+  	
 }
 #header {
+	
 	background:#999;
 	width: 1000px;
 	height: 100px;
@@ -74,8 +84,8 @@ body {
 
 #description
 {
-	height:200px;
-	width:996px;
+	
+	//width:996px;
 	border-radius:10px;
 	
 }
@@ -250,15 +260,18 @@ body {
 
 /*----------------start right area----------------*/
 #priceDiv{
-	background:#999;
-	height: 180px;
+	background: none repeat scroll 0% 0% rgb(227, 227, 227);
+	border-radius: 10px;
+  	border: 1px solid #AAAAAA;
+
+	  height: 208px;
   width: 250px;
-	margin-top: 26px;
+	margin-top: 0px;
 	margin-left:20px;
 	padding-top:25px;
 }
 #priceDiv2{
-	background:#999;
+	background: none repeat scroll 0% 0% rgb(227, 227, 227);
 	height: 205px;
   width: 250px;
 	margin-top: 26px;
@@ -301,6 +314,7 @@ body {
 	height: auto;
 	overflow: hidden;
 	padding: 0px;
+	margin-left:20px;
 	
 }
 
@@ -375,12 +389,14 @@ body {
 #our_product {
 
 	float: left;
-	width: 996px;
-	background: none repeat scroll 0% 0% rgb(227, 227, 227);
-	position: absolute;
-	margin-top: 10px;
-	margin-bottom: 10px;
-	position: relative;
+  	//width: 1159px;
+  	background: none repeat scroll 0% 0% rgb(227, 227, 227);
+  	position: absolute;
+  	margin-top: 10px;
+  	margin-bottom: 10px;
+  	position: relative;
+  border-radius: 10px;
+  border: 1px solid #AAAAAA;
 }
 
 #our_product h2 {
@@ -497,8 +513,12 @@ body {
 	margin-right:-106%; 
 	margin-top:-59%; 
 	height:205px; 
-	background:#999;
+	
 	width:250px;
 	border-radius:5px;
 	float:right;
+
+	background: none repeat scroll 0% 0% rgb(227, 227, 227);
+	border-radius: 10px;
+  	border: 1px solid #AAAAAA;
 }

@@ -1,3 +1,21 @@
+#footer{
+	height: 200px;
+	padding: 50px;
+	background-color: rgb(232, 232, 232);
+	border-style: solid;
+	border-width: 10pt 0pt 0pt 0pt;
+	border-color: rgb(160, 160, 160);
+	margin-top: 30px;
+}
+
+#footer li{
+	list-style-type: none;
+}
+
+body {
+	font-family: 'Open Sans', sans-serif;
+
+}
 
 .light_gray_button_disabled {
 	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
@@ -60,7 +78,6 @@
 	top:1px;
 }
 
-
 .colored_button {
 	-moz-box-shadow:inset 0px 1px 0px 0px #54a3f7;
 	-webkit-box-shadow:inset 0px 1px 0px 0px #54a3f7;
@@ -85,6 +102,7 @@
 	padding:6px 24px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #154682;
+	margin: 2px 0px 2px 0px;
 }
 .colored_button:hover {
 	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #0061a7), color-stop(1, #007dc1));
@@ -101,20 +119,33 @@
 	top:1px;
 }
 
+body,html {
+  margin:0;
+  padding:0;
+}
 
-#header_logo{
-	float: left;
+/* Header menu */
+
+#logo_container{
+	height:120px;		
 }
 
 #header_shopping_cart_count{
 	background-color: rgb(255, 97, 0);
 	padding: 3px 5px 2px 5px;
-	border-radius: 2px;
+	border-radius: 5px;
 	min-width: 10px;
 	color: white;
 }
 
+#site_top_bar_container{
+
+	background-color:#ccc;
+
+}
+
 #site_top_bar{
+	
 	max-width: 1200px;
 	min-width: 300px;
 	margin: 0 auto;
@@ -130,8 +161,9 @@
 #site_wrap{
 	max-width: 1200px;
 	min-width: 300px;
-	margin: 0 auto;
 	padding: 0 15px;
+	margin:0 auto;
+	min-height: 1500px;
 }
 
 #site_top_left_menu
@@ -163,3 +195,13 @@
 	display: inline; 
 	padding-left: 10px;
 }
+
+
+/* Gift items --------------------------------- */
+
+#gift_wrapper{
+	width:900px;
+	margin:0 auto;
+	min-height:600px;
+}
+	

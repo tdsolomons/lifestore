@@ -7,6 +7,7 @@ function checkSelectedSorting($sorting, $currentSorting){
 		return '';
 }
 ?>
+<title>Search Results</title>
 
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 <script type="text/javascript">
@@ -90,8 +91,35 @@ function checkSelectedSorting($sorting, $currentSorting){
 		window.location.href =  updateQueryStringParameter(document.URL, 'freeShip' , document.getElementById("free_shipping_checkbox").checked);
 	}
 
+	function onAllListingTypeClick(){
+		window.location.href =  updateQueryStringParameter(document.URL, 'itemType' , 'all');
+	}
+
+	function onAuctionTypeClick(){
+		window.location.href =  updateQueryStringParameter(document.URL, 'itemType' , 'auction');
+	}
+
+	function onBuyNowTypeClick(){
+		window.location.href =  updateQueryStringParameter(document.URL, 'itemType' , 'buynow');
+	}
+
+	function onRemoveSellerFilterClick(){
+		window.location.href =  updateQueryStringParameter(document.URL, 'seller' , '');
+	}
+
 	function gotoPage(page){
 		window.location.href =  updateQueryStringParameter(document.URL, 'page' , page);	
+	}
+
+	function onFollowSearch(){
+		window.location.href =  document.URL.replace("/query/", "/follow/");
+	}
+
+	function on_unfollow_search(followed_search_id){
+		window.location.href =  updateQueryStringParameter(document.URL, 
+														'followed_search', 
+														followed_search_id).replace("/query/", 
+																					"/unfollow/");
 	}
 
 	//This function insert or update the parameters in a URL 
@@ -113,7 +141,7 @@ function checkSelectedSorting($sorting, $currentSorting){
 
 
 <div id="search_top_options_bar">
-	Sort:
+	Order by:
 	<select id="sort_option_combobox" onchange="onSortComboBoxChange()" >
 		<option value="BM" <?php echo checkSelectedSorting('BM', $currentSorting); ?> >Best Match</option>
 		<option value="TNLF" <?php echo checkSelectedSorting('TNLF', $currentSorting); ?> >Time: Newly listed first</option>
@@ -122,15 +150,66 @@ function checkSelectedSorting($sorting, $currentSorting){
 		<option value="PLF" <?php echo checkSelectedSorting('PLF', $currentSorting); ?> >Price : Lowest first</option>
 		<option value="PHF" <?php echo checkSelectedSorting('PHF', $currentSorting); ?> >Price : Highest first</option>
 	</select>
-</div>
+	<?php
 
+	$itemType = "";
+	if($this->input->get('itemType') != NULL){
+		$itemType = $this->input->get('itemType');
+	}else{
+		$itemType = 'all';
+	}
+
+	if ($itemType == 'all') {
+	 	echo '<input class="item_type_button selected" type="button" onclick="onAllListingTypeClick()" value="All Listings"/>';
+	}else{
+		echo '<input class="item_type_button" type="button" onclick="onAllListingTypeClick()" value="All Listings"/>';
+	}
+
+	if ($itemType == 'auction') {
+		echo '<input class="item_type_button selected" type="button" onclick="onAuctionTypeClick()" value="Auction"/>';
+	}else{
+		echo '<input class="item_type_button" type="button" onclick="onAuctionTypeClick()" value="Auction"/>';
+	}
+
+	if ($itemType == 'buynow') {
+		echo '<input class="item_type_button selected" type="button" onclick="onBuyNowTypeClick()" value="Buy It Now"/>';
+	}else{
+		echo '<input class="item_type_button" type="button" onclick="onBuyNowTypeClick()" value="Buy It Now"/>';
+	}
+
+	if ($this->input->get('seller') != NULL) {
+		echo '<span id="seller_filter_span" ><a href="#" onclick="onRemoveSellerFilterClick()" id="remove_seller"> </a>
+				Items for sale from <strong><a href="'. base_url() .'Profile/seller/?seller='. $sellerId  .'">' . $sellerUsername[0]->username . '</a></strong></span>';
+	}
+
+	//Follow search section
+	if (isset($_SESSION['user_id'])) {
+		echo '<div id="follow_search_container" >';
+		//checking if current search is followed
+		if ($this->input->get('followed') != NULL) {
+			$followed_search_id = $this->input->get('followed');
+			
+			echo '<a class="extraButton" onclick="on_unfollow_search('. $followed_search_id .')" >Unfollow this search</a>';
+		}else{
+			echo '<a class="extraButton" onclick="onFollowSearch()" title="Get email notifications when new item added matching this search criteria">Follow this search</a>';
+		}
+
+		echo '<a href="'. base_url() .'search/all_followed_searches/" >View all followed searches</a>
+			</div>';
+	}
+	?>
+	
+	
+	
+</div>
+<div id="left_side_bar">
 <div id="search_filter_side_bar">
 	<h3>Price Range</h3>
 	<div id="price_range_validation_error">
 		<img src="<?php echo asset_url(); ?>img/info_red.png" />
 		Please enter min and max prices correctly before continuing.
 	</div>
-	Rs <input type="text" id="price_filter_min_textbox" width="50"
+	Rs <input type="text" id="price_filter_min_textbox" class="price_filter_textbox" width="20"
 		<?php
 			//Setting the value if set by user
 			$minPrice = $this->input->get('minPrice');
@@ -140,7 +219,7 @@ function checkSelectedSorting($sorting, $currentSorting){
 		?>
 	 />
 	 <br>to <br>
-	 Rs <input type="text" id="price_filter_max_textbox" width="50"
+	 Rs <input type="text" id="price_filter_max_textbox" class="price_filter_textbox" width="2"
 	 	<?php
 			//Setting the value if set by user
 			$maxPrice = $this->input->get('maxPrice');
@@ -149,9 +228,7 @@ function checkSelectedSorting($sorting, $currentSorting){
 			}
 		?>
 	 />
-	</br>
-	</br>
-	 <a href="#" id="price_range_filter_ok_button" onClick="onClickPriceRangeFilterOk()" class="light_gray_button" >Filter</a>
+	 <a href="#" id="price_range_filter_ok_button" onClick="onClickPriceRangeFilterOk()" class="light_gray_button" >OK</a>
 
 	<h3>Delivery Options</h3>
 	<input type="checkbox" name="free_shipping" id="free_shipping_checkbox" value="free_shipping" onClick="onFreeShippingCheck();" 
@@ -185,6 +262,55 @@ function checkSelectedSorting($sorting, $currentSorting){
 
 </div>
 
+<div id="recently_viewed_items_container">
+	
+<?php 
+	
+	if (isset($recentlyViewdItems)) {
+		echo '<h3>Recently viewed items</h3>
+			<table>';
+		foreach ($recentlyViewdItems as $object) {
+
+			$itemPriceSlot = "";
+			$itemLinkSlot = "";
+			if (isset($object->price)) {
+				$itemPriceSlot = '<span class="item_price_span" >' . printCurrencyInRs($object->price) . '</span>';
+				$itemLinkSlot = base_url() .'item/item/?item='. $object->item_id;
+			}else if(isset($object->starting_bid)){
+				$itemPriceSlot = 'Bidding starts at </br>
+								<span class="item_price_span" >' . printCurrencyInRs($object->starting_bid) . '</span>
+								<br>
+								<span class="time_left_span">'. getTimeLeftForDate($object->end_datetime) .'</span>';
+				$itemLinkSlot = base_url() .'item/AuctionItem/?item='. $object->item_id;
+			}
+
+			echo '<tr><td>
+					<div class="recenly_viewed_item">
+					<table>
+					<tr><td>
+						<img width="100" height="100" src="' . asset_url() . 'img/item_images/' . $object->file_name . '.jpg"/>
+					</td></tr>
+					<tr><td>
+						<a href="'. $itemLinkSlot .'">'. $object->title .'</a>
+					</td></tr>
+					<tr><td> 
+					' . $itemPriceSlot . '
+					</td></tr>
+
+					</table>
+					</div>
+				</td></tr>';
+		}
+
+		echo '</table>
+			<a href="'. base_url() . 'search/clearHistory/">Clear History</a>';
+	}
+
+?>
+	
+</div>
+</div> 
+
 <div id="search_result_container">
 <table>
 
@@ -202,7 +328,23 @@ function checkSelectedSorting($sorting, $currentSorting){
 			$keywordString = " for <strong>$keywords</strong>";
 		echo '<div id="result_count_text">'. $resultRowCount .' Results found' . $keywordString . '</div>';
 		//Showing Items
+		
+
 		foreach ($items as $object) {
+
+			$itemPriceSlot = "";
+			$itemLinkSlot = "";
+			if (isset($object->price)) {
+				$itemPriceSlot = '<span class="item_price_span" >' . printCurrencyInRs($object->price) . '</span>';
+				$itemLinkSlot = base_url() .'item/item/?item='. $object->item_id;
+			}else if(isset($object->starting_bid)){
+				$itemPriceSlot = 'Bidding starts at </br>
+								<span class="item_price_span" >' . printCurrencyInRs($object->starting_bid) . '</span>
+								<br>
+								<span class="time_left_span">'. getTimeLeftForDate($object->end_datetime) .'</span>';
+				$itemLinkSlot = base_url() .'item/AuctionItem/?item='. $object->item_id;
+			}
+
 			// getShippingTitle and printCurrencyInRs are from utility_helper.php (autoload)
 			echo  '<tr><td class="search_result_item">
 					<table><tr>
@@ -211,13 +353,15 @@ function checkSelectedSorting($sorting, $currentSorting){
 						</td>
 						<td>
 							
-							<a href="'. base_url() .'item/item/?item='. $object->item_id .'"><h3>'. $object->title . '</h3></a>
+							<a href="'. $itemLinkSlot .'"><h4>'. $object->title . '</h4></a>
 							<br>
-							<span class="item_price_span" >'. printCurrencyInRs($object->price) .'</span>
+							'. $itemPriceSlot .'
 							<br>
 							<span>'. getShippingTitle($object->shipping_cost) . '</span>
 							<br>
-							<span>Seller: <a href="">'. $object->username .'</a></span>
+							<span>Seller: <a href="'. base_url() .'Profile/seller/?seller='. $object->seller  .'">'. $object->username .'</a>
+
+							</span>
 							
 						</td>
 					</tr></table>
@@ -248,4 +392,5 @@ function checkSelectedSorting($sorting, $currentSorting){
 
 		?>
 	</div>
+</table>
 </div>

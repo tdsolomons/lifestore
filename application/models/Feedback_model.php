@@ -21,7 +21,8 @@ class Feedback_model extends CI_Model {
     }
 
     public function getSellerFeedbacks($userId){
-    	$sql = "SELECT f.buyer_comment, f.buyer_rating, u.username, u2.username AS 'buyer_username'
+    	$sql = "SELECT f.buyer_comment, f.buyer_rating, u.username, u2.username AS 'buyer_username', 
+    				u2.user_id AS 'buyer_id', i.title, i.item_id, o.sold_price
     			FROM `order` o, feedback f, item i, user u, user u2
     			WHERE f.`order` = o.order_id 
 	    			AND i.seller = '$userId' 
@@ -55,7 +56,8 @@ class Feedback_model extends CI_Model {
     }
 
     public function getBuyerFeedbacks($userId){
-    	$sql = "SELECT f.seller_comment, f.seller_rating, u.username AS 'seller_username'
+    	$sql = "SELECT f.seller_comment, f.seller_rating, u.username AS 'seller_username', 
+    				u.user_id AS 'seller_id', i.title, i.item_id, o.sold_price
     			FROM `order` o, feedback f, user u, item i
     			WHERE f.`order` = o.order_id 
 	    			AND o.bought_by_user = '$userId' 
@@ -82,10 +84,18 @@ class Feedback_model extends CI_Model {
 					SET buyer_rating = '$rating', buyer_comment= '$content' 
 					WHERE `order`= '$orderId'";
 
-			$query = $this->db->query($sql);
+			$query2 = $this->db->query($sql);
 
-			return TRUE;
+			if ($query2) {
+
+				return TRUE;
+			}else{
+				echo $this->db->_error_message();
+				return FALSE;
+			}
+			
 		}else{
+			echo $this->db->_error_message();
 			return FALSE;
 		}	
     }

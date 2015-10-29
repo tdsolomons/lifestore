@@ -28,11 +28,11 @@ class Feedback extends CI_Controller {
                 $content = addslashes($this->input->post('content'));
                 $orderId = $this->input->post('order_id');
                 $rating = $this->input->post('rating');
-
+                
                 $this->load->model('feedback_model');
                 $this->feedback_model->buyerPostFeedback($orderId, $content, $rating);
                 $this->load->helper('url');
-                redirect('/', 'refresh');
+                redirect('/MyOrders', 'refresh');
         }
 
         

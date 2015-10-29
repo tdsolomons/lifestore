@@ -1,0 +1,56 @@
+<?php
+/**
+ * Handles all the operations related to viewing of deals
+ *
+ * @package Codigniter
+ * @subpackage  Emarketing portal
+ * @author  Thilina Solomons
+ */
+class Deals_model extends CI_Model {
+
+    public function __construct()
+    {
+            $this->load->database();
+    }
+
+    /**
+    * Returns all deals available at the time
+    *
+    * @access   public
+    * @return   array of objects
+    */
+    public function get_all_deals(){
+        //Left joins deals if available 
+        $sql = "SELECT d.deal_id, 
+                    d.off_percentage, 
+                    d.end_time, 
+                    fpi.price, 
+                    i.item_id, 
+                    i.title, 
+                    i.shipping_cost, 
+                    i.available_quantity, 
+                    img.file_name
+                FROM deal d, fixed_price_item fpi, item i, image img
+                WHERE d.fixed_price_item = fpi.item_id
+                    AND fpi.item_id = i.item_id
+                    AND i.main_image = img.image_id
+                    AND d.end_time > NOW()
+                ORDER BY off_percentage DESC";
+
+        $query = $this->db->query($sql);
+        
+        if ($query) {
+            return $query->result();
+        }else
+            return NULL;
+        
+    }
+
+    /**
+    * Returns all deals initiated by logged in seller
+    *
+    * @access   public
+    * @return   array of objects
+    */
+    public function get_sellers_deals(){
+        /

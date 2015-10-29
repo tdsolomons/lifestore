@@ -34,8 +34,17 @@ class Welcome extends CI_Controller {
 		$data['title'] = 'Home';
 		$this->load->view('templates/header', $data);
 		$this->load->view('templates/search_box');
+		$this->load->view('imageBanner');
+
 		$this->load->model('search_model');
+		$this->load->model('profile_model');
+
 		$data['categories'] = $this->search_model->getAllCategories();
+		$data['latestItemsByFollowingSellers'] = $this->profile_model->getLatestItemsOfFollowingSellers();
+		
+		$this->load->model('Trending_model');
+		$data['others_viewed'] = $this->Trending_model->others_viewed_items();
+		$data['trending_items'] = $this->Trending_model->get_trending_items();
 		$this->load->view('home_view', $data);
 		$this->load->view('templates/footer');
 	}

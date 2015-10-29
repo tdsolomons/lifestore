@@ -7,39 +7,46 @@ class Upload extends CI_Controller {
 		parent::__construct();
 		$this->load->helper(array('form', 'url'));
 	    $this->load->database();
+		session_start();
 	}
 
 	
 	function index()
 	{
-		session_start();
+	
 		$buttonId=$this->input->get('buttonId');
 		$_SESSION['buttonId'] = $buttonId;
+		
 		$this->load->view('uploadImage_view', array('error' => ' ' ));
 	}
 
  	
 	function loadUpload()
 	{
-		session_start();
+
 		if(isset($_SESSION['buttonId'])){
 			$itemId = $_SESSION['item_id'];
 			$this->load->model('Upload_model');
 			$imageData=$this->Upload_model->getImages($itemId);
-			$this->load->view('addImage_view',$imageData);
+			$this->load->view('templates/header');
+		$this->load->view('templates/search_box');
+		$this->load->view('addImage_view',$imageData);
+ 	    $this->load->view('templates/footer');;
 		}
 		else{					   
+		$this->load->view('templates/header');
+		$this->load->view('templates/search_box');
 		$this->load->view('addImage_view',$data);
+ 	    $this->load->view('templates/footer');;
 		}
 	}
 	
 
 	
-     //Item Details Upload--------------------------------------------
+ //Item Details Upload-------------------------------------------------------------------------------------------------------
 	function add_item()
 	{
 		$this->load->library('form_validation');
-		
 		$this->form_validation->set_rules('name', 'Name', 'trim|required');
         $this->form_validation->set_rules('desc', 'Description', 'trim|required');
         $this->form_validation->set_rules('price', 'Price', 'trim|required|numeric');
@@ -49,19 +56,28 @@ class Upload extends CI_Controller {
 
         if ($this->form_validation->run() == false) {
              $this->load->model('Search_model');
-    		 $this->load->view('addItem_view',array('categories'=>$this->Search_model->getAllCategories(),'conditions'=>$this->Search_model->getConditionsTypes()));
+    		 $this->load->view('templates/header');
+		     $this->load->view('templates/search_box');
+			 $this->load->view('addItem_view',array('categories'=>$this->Search_model->getAllCategories(),'conditions'=>$this->Search_model->getConditionsTypes()));
+			 $this->load->view('templates/footer');
         } 
+		
+		
 		else {	
 			 $this->load->model('Upload_model');
+			 //Array contains image data if exist
 			 $test=array('testValue'=>"");		
-			//detail upload -- load image upload page
-			if($query = $this->Upload_model->add_item()){
+			 //detail upload -- load image upload page
+			 if($query = $this->Upload_model->add_item()){
+				$this->load->view('templates/header');
+				$this->load->view('templates/search_box');
 				$this->load->view('addImage_view',$test);
-			}
-			else{
+ 	    		$this->load->view('templates/footer');;
+			 }
+			 else{
 				echo "Error";
 			}
-		}
+	     }
 	}
 	
 	
@@ -81,14 +97,21 @@ class Upload extends CI_Controller {
 
         if ($this->form_validation->run() == false) {
              $this->load->model('Search_model');
-    		 $this->load->view('addAuctionItem1_view',array('categories'=>$this->Search_model->getAllCategories(),'conditions'=>$this->Search_model->getConditionsTypes()));
+			 $this->load->view('templates/header');
+		$this->load->view('templates/search_box');
+		
+ 	   
+    		 $this->load->view('addAuctionItem1_view',array('categories'=>$this->Search_model->getAllCategories(),'conditions'=>$this->Search_model->getConditionsTypes())); $this->load->view('templates/footer');
         } 
 		else {	
 			 $this->load->model('Upload_model');
 			 $test=array('testValue'=>"");		
 			//detail upload -- load image upload page
 			if($query = $this->Upload_model->add_auction_item()){
-				$this->load->view('addImage_view',$test);
+				$this->load->view('templates/header');
+		$this->load->view('templates/search_box');
+		$this->load->view('addImage_view',$test);
+ 	    $this->load->view('templates/footer');;
 			}
 			else{
 				echo "Error";
@@ -96,19 +119,19 @@ class Upload extends CI_Controller {
 		}
 	}
 
-	//Item Images Upload------------------------------------------------
+	
+	
+ //Item Images Upload----------------------------------------------------------------------------------------------
 	function do_upload()
 	{
-		session_start();
-		$itemId=$_SESSION['item_id'];
 		
+		$itemId=$_SESSION['item_id'];
 		$config['upload_path'] = './assets/img/item_images/';
 		$config['allowed_types'] = 'gif|jpg|png';
 		$config['file_name'] = mt_rand(100000,10000000).'0000'.$itemId;
 		$config['max_size']	= '2000';
 		$config['max_width']  = '1920';
 		$config['max_height']  = '1080';
-
 		$this->load->library('upload', $config);
 
 		
@@ -151,11 +174,119 @@ class Upload extends CI_Controller {
 	}
 
 
+
+ //Item details update--------------------------------------------------------------------------------------------
+	function update_item()
+	{
+		  //validate update details form
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('name', 'Name', 'trim|required');
+        $this->form_validation->set_rules('desc', 'Description', 'trim|required');
+        $this->form_validation->set_rules('price', 'Price', 'trim|required|numeric');
+        $this->form_validation->set_rules('cost', 'Shipping Cost', 'trim|required|numeric');
+        $this->form_validation->set_rules('quantity', 'Available Quantity', 'trim|required|numeric');
+       
+
+        if ($this->form_validation->run() == false) {
+             $this->load->model('Search_model');
+			  $this->load->view('templates/header');
+		$this->load->view('templates/search_box');
+		
+ 	   
+    		 $this->load->view('updateItem_view',array('categories'=>$this->Search_model->getAllCategories(),'conditions'=>$this->Search_model->getConditionsTypes())); $this->load->view('templates/footer');
+        } 
+		else {	
+			 $this->load->model('Upload_model');
+			 		
+			//detail upload -- load image upload page
+			if($query = $this->Upload_model->update_item()){
+				$itemId=$_SESSION['item_id'];
+			    $test=$this->Upload_model->getImages($itemId);
+				
+				 $this->load->view('templates/header');
+		$this->load->view('templates/search_box');
+		$this->load->view('addImage_view',$test);
+ 	    $this->load->view('templates/footer');
+			}
+			else{
+				echo "Error";
+			}
+		}
+	}
+	
+	
+		function update_auction_item()
+	{
+		  //validate update details form
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('name', 'Name', 'trim|required');
+        $this->form_validation->set_rules('desc', 'Description', 'trim|required');
+        //$this->form_validation->set_rules('price', 'Price', 'trim|required|numeric');
+        $this->form_validation->set_rules('cost', 'Shipping Cost', 'trim|required|numeric');
+        $this->form_validation->set_rules('quantity', 'Available Quantity', 'trim|required|numeric');
+       
+
+        if ($this->form_validation->run() == false) {
+             $this->load->model('Search_model');
+			  $this->load->view('templates/header');
+		      $this->load->view('templates/search_box');
+		      $this->load->view('updateAuctionItem_view',array('categories'=>$this->Search_model->getAllCategories(),'conditions'=>$this->Search_model->getConditionsTypes())); 
+			  $this->load->view('templates/footer');
+        } 
+		else {	
+			 $this->load->model('Upload_model');
+			 		
+			//detail upload -- load image upload page
+			if($query = $this->Upload_model->update_auction_item()){
+				$itemId=$_SESSION['item_id'];
+			    $test=$this->Upload_model->getImages($itemId);
+				
+				 $this->load->view('templates/header');
+		$this->load->view('templates/search_box');
+		$this->load->view('addImage_view',$test);
+ 	    $this->load->view('templates/footer');
+			}
+			else{
+				echo "Error";
+			}
+		}
+	}
 	
 	
 	
 	
+	function remove_item(){
+	 $itemId=$this->input->get('item');
+	 $this->load->model('Upload_model');
+	 $this->Upload_model->remove_item($itemId);
+	 
+	  
+		$userId=$_SESSION['user_id'];
+		$data['query'] = $this->Upload_model->getListings($userId);
+		$data['orderedItems'] = $this->Upload_model->getOrderedItems($userId);
+		$data['deliveredItems'] = $this->Upload_model->getDeliveredItems($userId);
+		$data['returnedItems'] = $this->Upload_model->getReturnedItems($userId);
+		$data['completedOrders'] = $this->Upload_model->getCompletedOrders($userId);
+		//load page
+		$this->load->view('templates/header');
+		$this->load->view('templates/search_box');
+		$this->load->view('selling_home_view',$data);
+ 	    $this->load->view('templates/footer');
+	}
 	
+	function remove_image(){
+	 $itemId=$_SESSION['item_id'];
+	 $buttonId=$this->input->get('buttonId');
+	 $this->load->model('Upload_model');
+	 $this->Upload_model->remove_image($itemId,$buttonId);
+	 $test=$this->Upload_model->getImages($itemId);
+	 $this->load->view('templates/header');
+		$this->load->view('templates/search_box');
+		$this->load->view('addImage_view',$test);
+ 	    $this->load->view('templates/footer');
+	 
+	}
+ 
 	
 	
 }

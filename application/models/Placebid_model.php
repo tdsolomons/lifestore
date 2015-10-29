@@ -16,3 +16,4 @@ public function insertbid ($data)
 	
 }
 }
+?>

@@ -22,75 +22,16 @@
  
  
  
-<!--Header----------------------------------------------------------------> 
- <div style="background-color:#ccc;height:30px;">
- 	 <div style="width: 200px; position: absolute; height: 30px; right: 0px;text-align:right;padding:5px">
-     
-     <a href="login.php" ><span class="glyphicon glyphicon-user"></span>  Login | Register </a>
-     
-     </div>
- </div>
-<div style="background-image:url(<?php echo asset_url(); ?>img/sdd.png);height:120px;">
-  <div style="margin:30px auto auto 60px;background-image:url(<?php echo asset_url(); ?>img/logo1.png);width:260px;height:65px;position:absolute ; "></div>
- 
-</div>
- 
- 
- 
-<!--Search Bar------------------------------------------------------------------> 
 
- <div class="row"  style="min-height:50px;height:80px">
-  <table class="table" style="margin-top:10px;">
-   <tr>
-          <td style=>
-               <div class="container" style="height:35px;width:850px;;" align="center">
-               <form role="form" class="form-inline" action="tset" method="post">
-            
-                  <div class="form-group  ">
-                      <input type="text" class="form-control"  name="fname" id="fname" placeholder="Search items " style="width:400px">                  
-                  </div>
-               
-                  
-                  <div class="form-group">
-                    
-                        <select class="form-control" id="sel1">
-                        <?php
-	                              foreach ($categories as $object) {
-		   echo '<option>' . $object->category_name . '</option>' ;
- 	                              }
-
-                               ?>
-                        </select>
-                      </div>
-                  
-                  
-                  <div class="form-group ">
-                      <input type="submit" class="form-control btn btn-primary "  value="Search" >                  
-                  </div>
-               
-               
-               </form>
-              
-               </div>
-          </td>
-           
-   </tr>
-   
-   
-   <tr><td></td></tr>
-  </table>
  
  
  
- </div>
-
-
 
 
 <!--Contents------------------------------------------------------------------> 
 <div class="container">
 
-    <div class="page-header h3" style="font-family:'Trebuchet MS', Arial, Helvetica, sans-serif">My Account</div>
+    
     
     
     
@@ -171,7 +112,7 @@
 								 <?php if(isset($imageTwo)){
 									  			if($imageTwo!=0)
 													{?>
-													 <input type="button" id="2" value="Replace" class="btn btn-default" onclick="addImage(this.id)" />
+													 <input type="button" id="2" value="Remove" class="btn btn-default" onclick="removeImage(this.id)" />
 												<?php } else {
 												    $url2=asset_url()."img/logo1.png"; ?>
                                                      <input type="button" id="2" value="Add" class="btn btn-default" onclick="addImage(this.id)" /> <?php } 
@@ -200,10 +141,10 @@
                                  <?php if(isset($imageThree)){
 									  			if($imageThree!=0)
 													{?>
-													 <input type="button" id="3" value="Replace" class="btn btn-default" onclick="addImage(this.id)" />
+													 <input type="button" id="3" value="Remove" class="btn btn-default" onclick="removeImage(this.id)" />
 												<?php } else {
 												    $url3=asset_url()."img/logo1.png"; ?>
-                                                     <input type="button" id="4" value="Add" class="btn btn-default" onclick="addImage(this.id)" /> <?php } 
+                                                     <input type="button" id="3" value="Add" class="btn btn-default" onclick="addImage(this.id)" /> <?php } 
 								  		}
 										else {
                              		    		$url3=asset_url()."img/logo1.png";?>
@@ -231,7 +172,7 @@
                                  <?php if(isset($imageFour)){
 									  			if($imageFour!=0)
 													{?>
-													 <input type="button" id="4" value="Replace" class="btn btn-default" onclick="addImage(this.id)" />
+													 <input type="button" id="4" value="Remove" class="btn btn-default" onclick="removeImage(this.id)" />
 												<?php } else {
 												    $url4=asset_url()."img/logo1.png"; ?>
                                                      <input type="button" id="4" value="Add" class="btn btn-default" onclick="addImage(this.id)" /> <?php } 
@@ -250,6 +191,11 @@
 									 buttonId=bId;
 									window.open("http://sep.tagfie.com/Upload?buttonId="+buttonId, "_blank", "toolbar=no, scrollbars=no, resizable=yes, width=800, height=400");
 									}
+								
+								function removeImage(bId){
+									 buttonId=bId;
+									window.location.href="http://sep.tagfie.com/Upload/remove_image?buttonId="+buttonId;
+									}
                           
                           </script>
                           
@@ -258,7 +204,7 @@
                           
                     
                            <div style="margin-top:100px">
-                    			<a href="http://sep.tagfie.com/UserAccount" class="btn btn-primary">Done </a>       
+                    			<a href="http://sep.tagfie.com/UserAccount/verifyUpload" class="btn btn-primary">Done </a>       
                            </div>
              
         
@@ -282,25 +228,4 @@
  
  
  
- <!--Footer--------------------------------------------------------------------->
  
- 
-<div style="height:260px;opacity:0.6;background-color:#CCC"></div>
-  
-  
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-</body>
-</html>

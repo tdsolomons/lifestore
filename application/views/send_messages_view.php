@@ -11,6 +11,7 @@ function textCounter(field,field2,maxlimit)
 	 }
 }
 </script>
+<link rel="stylesheet" type="text/css" href="<?php echo asset_url(); ?>css/message_styles.css">
 
 <?php
 	$item = '';
@@ -29,27 +30,47 @@ function textCounter(field,field2,maxlimit)
 			<table>
 				<tr><td><?php echo '<a href="' . base_url(). 'item/item/?item=' . $item->item_id . '" >' . $item->title . '</a>'; ?></td></tr>
 				<tr><td>Item Number: <?php echo $item->item_id; ?></td></tr>
-				<tr><td>Price : <?php echo $item->price; ?></td></tr>
+				<tr><td> 
+				<?php 
+					if (isset($item->price)) {
+						echo 'Price :' . $item->price; 
+					}else{
+						echo 'Auction Item';
+					}
+					
+
+				?>
+				</td></tr>
 			</table>
 
 		</td>
 	</tr>
 </table>
 
-<table>
+<table id="message_table">
 <?php 
 	if (isset($msgs)) {
 		foreach ($msgs as $msgObject) {
-			$senderDisplayName = '';
+			$userUrlSlot = '';
 			if (strcmp($_SESSION['user_id'], $msgObject->sender) == 0) {
-				$senderDisplayName = 'You';
+				$userUrlSlot = 'You';
 			}else{
-				$senderDisplayName = $toUserUsername;
+				$userUrlSlot = '<a href="' . base_url() . '/Profile/seller/?seller=' . $toUserId . '">'. $toUserUsername .'</a>';
 			}
-			echo '<tr>
-					<td>'. $senderDisplayName .':</td>
+
+			$messageItemClass = "message_item unread";
+			$messageItemSeenElement = '';
+			if ($msgObject->read == '1') {
+				$messageItemClass = "message_item read";
+				if (strcmp($_SESSION['user_id'], $msgObject->sender) == 0) {
+					$messageItemSeenElement = '<span><img width="10" height="10" src="'. asset_url() .'img/seen_tick.svg"/> Seen</span>';
+				}
+			}
+
+			echo '<tr class="'. $messageItemClass .'" >
+					<td>'. $userUrlSlot .':</td>
 					<td>'. $msgObject->content .'</td>
-					<td><small>'. $msgObject->sent_time .'</small></td>
+					<td><small>'. $msgObject->sent_time .'</small><br>'. $messageItemSeenElement .'</td>
 				</tr>';
 		}
 	}

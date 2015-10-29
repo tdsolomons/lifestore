@@ -1,0 +1,45 @@
+#category_table{
+	  width: 100%;
+}
+
+#category_table td {
+  padding: 20px;
+  background-color: rgb(226, 226, 226);
+  border-width: 10px;
+  border-radius: 2px;
+
+}
+
+#category_table a{
+	font-size: large;
+	 color: #454545;
+}
+
+#category_table img{
+	margin: 5px;
+}
+
+#category_table a:hover{
+	 color: white;
+}
+
+
+#category_table td:hover{
+  background-color: rgb(123, 123, 123);	
+  color: white;
+}
+
+#category_table img:hover path{
+  fill:red;
+}
+
+#category_table td:hover +img path{
+  fill:red;
+}
+
+
+#category_table td a {
+	text-align: center;
+	width: 100%;
+	text-decoration: none;
+}
